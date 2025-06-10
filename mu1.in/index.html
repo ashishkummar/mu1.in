@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preloader Demo</title>
+    <style>
+        /* Burger Menu Styles */
+        .burger-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 45px; /* Adjusted for padding */
+            height: 45px; /* Adjusted for padding */
+            padding: 12px; /* Padding around lines */
+            cursor: pointer;
+            z-index: 1001; /* Above overlay */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around; /* Better spacing for lines */
+            align-items: center; /* Center lines if they don't fill width */
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .burger-menu span {
+            display: block;
+            width: 20px; /* Fixed width for lines */
+            height: 2.5px; /* Slightly thinner lines */
+            background-color: #9C27B0; /* Purple to match theme */
+            border-radius: 3px;
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+        .burger-menu.open span:nth-child(1) {
+            transform: rotate(45deg) translate(4px, 5px); /* Adjusted for new size */
+        }
+
+        .burger-menu.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger-menu.open span:nth-child(3) {
+            transform: rotate(-45deg) translate(4px, -5px); /* Adjusted for new size */
+        }
+
+        /* Nav Overlay Styles */
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(225, 229, 248, 0.85); /* Light glassmorphic background */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px);
+            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+        }
+
+        .nav-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-overlay ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+
+        .nav-overlay li {
+            margin: 25px 0;
+        }
+
+        .nav-overlay a {
+            color: #9C27B0; /* Purple to match theme */
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            padding: 10px 15px;
+        }
+
+        .nav-overlay a:hover {
+            color: #7b1fa2; /* Darker purple on hover */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            /* height: 100vh; -- Removed to allow content to define height */
+            /* display: flex; -- Removed to prevent centering of main-container */
+            /* justify-content: center; -- Removed */
+            /* align-items: center; -- Removed */
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            /* margin: 0; -- Handled by * reset */
+        }
+        .main-container {
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e1e6f8 100%);
+        }
+        .page-header,
+        .content-block {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 24px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 900px; /* Max width for content blocks */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-container {
+            padding: 20px; /* Add padding to main container */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content blocks */
+        }
+
+        .page-header {
+            padding: 30px 20px;
+            margin-bottom: 40px;
+        }
+        .logo {
+            width: 100px; /* Slightly larger logo in header */
+            height: 100px;
+            border-radius: 20px;
+            /* margin-bottom removed, handled by page-header padding */
+            box-shadow: 0 4px 16px 0 rgba(156, 39, 176, 0.12);
+            background: white;
+            object-fit: contain;
+        }
+        .mu1-heading {
+            font-size: 2.5rem;
+            color: #9C27B0;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 0.2em;
+            text-shadow: 0 2px 8px rgba(156, 39, 176, 0.08);
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 32px;
+            letter-spacing: 1px;
+        }
+        .ask-button {
+            background: rgba(156, 39, 176, 0.18);
+            color: #9C27B0;
+            border: 1.5px solid #e1bee7;
+            padding: 14px 36px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            box-shadow: 0 8px 32px 0 rgba(156, 39, 176, 0.08);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 24px;
+        }
+        .ask-button:hover {
+            background: rgba(156, 39, 176, 0.28);
+            color: #fff;
+            border: 1.5px solid #9C27B0;
+            box-shadow: 0 16px 48px 0 rgba(156, 39, 176, 0.18);
+            transform: translateY(-2px) scale(1.04);
+        }
+
+        .fb-feed-container {
+            margin-top: 15px; /* Reduced top margin as section has padding */
+            width: 100%;
+            max-width: 500px; /* Facebook plugin max width */
+            /* margin-left and margin-right auto removed as parent .content-block centers */
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .content-block h2 {
+            color: #9C27B0;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        /* Responsive YouTube Embed */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+            background: #000;
+            border-radius: 12px; /* Match other elements */
+            margin-top: 10px;
+        }
+
+        .video-container iframe,
+        .map-preview-image {
+            width: 100%;
+            max-width: 600px; /* Adjust as needed */
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .map-link-button {
+            margin-top: 0; /* Remove default top margin from ask-button if reused */
+        }
+
+        /* Google Form Container Styles */
+        .google-form-container {
+            width: 100%;
+            /* You might want to set a specific height or max-height for the iframe's container */
+            /* e.g., height: 600px; or max-height: 75vh; */
+            /* The iframe itself will have its own height attribute from Google, but this container can help manage overflow or provide a consistent space */
+            display: flex; /* To center the iframe if its width is less than 100% */
+            justify-content: center; /* To center the iframe if its width is less than 100% */
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.05); /* Slight background for the container */
+            border-radius: 12px; /* Match other elements */
+            padding: 10px; /* Optional padding around the iframe */
+        }
+        .google-form-container iframe {
+            border-radius: 8px; /* Style the iframe border if visible */
+            max-width: 100%; /* Ensure iframe is responsive */
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.open {
+            display: flex; /* Show when open */
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px 30px;
+            border-radius: 15px;
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #ddd;
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            color: #9C27B0;
+            margin-top: 0;
+        }
+
+        .sheet-container {
+            flex-grow: 1;
+            overflow: hidden; /* For border-radius on iframe */
+            border-radius: 8px;
+        }
+
+        .sheet-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Shimmer Effect */
+        .shimmer-effect {
+            position: relative;
+            overflow: hidden; /* This is crucial */
+        }
+
+        .shimmer-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 75%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.5) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-25deg);
+            animation: shimmer 3s infinite;
+            animation-delay: 2s; /* Wait before starting animation */
+        }
+
+        @keyframes shimmer {
+            100% {
+                left: 150%;
+            }
+        }
+
+        @media (max-width: 768px) { /* Adjusted breakpoint */
+            .page-header,
+            .content-block {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header,
+            .content-block {
+                padding: 15px;
+                min-width: calc(100% - 30px); /* Ensure it fits with padding */
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+                /* margin-bottom removed */
+            }
+
+            .ask-button {
+                font-size: 1rem;
+                padding: 12px 28px;
+            }
+            
+            .fb-feed-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="burger-menu" id="burgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <nav class="nav-overlay" id="navOverlay">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="https://chatgpt.com/g/g-68418ba67ea88191a3739a4132512ad4-realgpt-in" target="_blank">Ask Me Anything</a></li>
+            <li><a href="https://www.facebook.com/MU1.in/" target="_blank">MU1 Facebook</a></li>
+            <li><a href="https://whatsapp.com/channel/0029VbAy0TJIN9iryiXipt2E" target="_blank">WhatsApp Channel</a></li>
+        </ul>
+    </nav>
+
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0" nonce="aBcDeFgH"></script>
+    <div class="main-container">
+        <header class="page-header">
+            <img src="https://scontent.fdel41-1.fna.fbcdn.net/v/t39.30808-1/436262132_937376365057071_7872012874805576734_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=109&ccb=1-7&_nc_sid=f907e8&_nc_ohc=otIA5qHjEqoQ7kNvwHw5hbt&_nc_oc=Adnirp5NHvFgE4xle4YTb5OedB0eUKqqwnXLRa7tbapLCY_Nc3VIZPwPmkDrmQ5E_CI&_nc_zt=24&_nc_ht=scontent.fdel41-1.fna&_nc_gid=XMZacfffhH5jNFvtGZvS0w&oh=00_AfNnGT0X9Q9XEdzHErUhnuA5Pn7CpWMYM-zBjOGhlbyPDw&oe=684E7004" alt="MU1 Logo" class="logo" />
+        </header>
+
+        <section class="content-block facebook-block">
+            <h2>Stay Connected on Facebook</h2>
+            <div class="fb-feed-container">
+                <div class="fb-page" data-href="https://www.facebook.com/MU1.in/" data-tabs="timeline" data-width="500" data-height="1200" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false"><blockquote cite="https://www.facebook.com/MU1.in/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/MU1.in/">Motivational Umbrella</a></blockquote></div>
+            </div>
+        </section>
+
+        <section class="content-block youtube-block">
+            <h2>Featured Video</h2>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/_Tf0LBGDIpw" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </section>
+
+        <section class="content-block gnida-map-block">
+            <h2>GNIDA Interactive Map</h2>
+            <img src="https://i.snipboard.io/Gu085U.jpg" alt="GNIDA Map Preview" class="map-preview-image">
+            <a href="https://umd.nic.in/gnida/Map.aspx" target="_blank" class="ask-button map-link-button">Visit GNIDA Map</a>
+        </section>
+
+        <section class="content-block survey-block">
+            <h2>Share Your Feedback</h2>
+            <p style="text-align: center; margin-bottom: 20px; font-size: 0.9rem;">Help us make this website perfect for you! Your suggestions are valuable.</p>
+            <div class="google-form-container">
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdqvfrP7F3S6FDRN9IFJ3ybOJ53o5By7DwoL3X-zsTo1Ob9sw/viewform?embedded=true" width="100%" style="max-width: 640px;" height="982" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe> 
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="button" id="showResponsesBtn" class="ask-button shimmer-effect">See What People are thinking</button>
+            </div>
+        </section>
+
+        <section class="content-block cta-block">
+            <a href="https://chatgpt.com/g/g-68418ba67ea88191a3739a4132512ad4-realgpt-in" target="_blank" class="ask-button">Ask Me Anything</a>
+        </section>
+    </div>
+
+    <!-- Modal for Google Sheet -->
+    <div id="sheetModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" id="closeModalBtn">&times;</span>
+            <h2>What People Are Thinking</h2>
+            <div class="sheet-container">
+                <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQQUpM3bdstxGsWVnYFUf4JHwIL1F6wVK8SMEqB2iwezIoe0xMTw7wdT5gmbaSzk3Yd_djjE-LQFiws/pubhtml?gid=1206999057&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal -->
+
+    <script>
+        const burgerMenu = document.getElementById('burgerMenu');
+        const navOverlay = document.getElementById('navOverlay');
+
+        burgerMenu.addEventListener('click', () => {
+            burgerMenu.classList.toggle('open');
+            navOverlay.classList.toggle('open');
+        });
+
+        // Close menu when a link is clicked (optional, good for SPAs or same-page links)
+        navOverlay.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navOverlay.classList.contains('open')) {
+                    // Only close if it's not a link opening in a new tab and is a same-page anchor
+                    if (!link.target || link.target !== '_blank' || link.getAttribute('href').startsWith('#')) {
+                        burgerMenu.classList.remove('open');
+                        navOverlay.classList.remove('open');
+                    }
+                }
+            });
+        });
+
+        // Modal JS
+        const showResponsesBtn = document.getElementById('showResponsesBtn');
+        const sheetModal = document.getElementById('sheetModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // Open modal
+        if (showResponsesBtn) {
+            showResponsesBtn.addEventListener('click', () => {
+                sheetModal.classList.add('open');
+            });
+        }
+
+        // Close modal with button
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                sheetModal.classList.remove('open');
+            });
+        }
+
+        // Close modal by clicking overlay
+        if (sheetModal) {
+            sheetModal.addEventListener('click', (event) => {
+                if (event.target === sheetModal) {
+                    sheetModal.classList.remove('open');
+                }
+            });
+        }
+    </script>
+
+    <!-- Statcounter Code -->
+    <script type="text/javascript" src="statcounter_include.js" async></script>
+    <noscript><div class="statcounter"><a title="Web Analytics"
+    href="https://statcounter.com/" target="_blank"><img
+    class="statcounter"
+    src="https://c.statcounter.com/13143088/0/5fd7c403/1/"
+    alt="Web Analytics"
+    referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+    <!-- End of Statcounter Code -->
+</body>
+</html>
