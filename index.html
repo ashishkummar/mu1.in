@@ -92,36 +92,49 @@
     <!-- End Modal -->
 
     <script>
+    console.log("PWA script started.");
     if ('serviceWorker' in navigator) {
+        console.log("Service Worker is supported by this browser.");
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js').then(registration => {
-                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                console.log('✅ ServiceWorker registration successful with scope: ', registration.scope);
             }, err => {
-                console.log('ServiceWorker registration failed: ', err);
+                console.error('❌ ServiceWorker registration failed: ', err);
             });
         });
 
         let deferredPrompt;
         const installBtn = document.getElementById('installBtn');
+        console.log("Install button element found:", installBtn);
 
         window.addEventListener('beforeinstallprompt', (e) => {
+            console.log("✅ 'beforeinstallprompt' event was fired.");
             e.preventDefault();
             deferredPrompt = e;
+            console.log("Showing the install button.");
             installBtn.style.display = 'block';
 
             installBtn.addEventListener('click', (e) => {
+                console.log("Install button clicked.");
                 installBtn.style.display = 'none';
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
+                        console.log('User accepted the A2HS prompt');
                     } else {
-                        console.log('User dismissed the install prompt');
+                        console.log('User dismissed the A2HS prompt');
                     }
                     deferredPrompt = null;
                 });
             });
         });
+
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('✅ App was successfully installed.');
+        });
+
+    } else {
+        console.error("Service Worker is NOT supported by this browser.");
     }
 
         const burgerMenu = document.getElementById('burgerMenu');
