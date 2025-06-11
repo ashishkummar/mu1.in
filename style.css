@@ -394,6 +394,7 @@ body {
 .footer a {
     color: #9C27B0;
     text-decoration: none;
+    font-size: 12px;
 }
 
 .footer a:hover {
