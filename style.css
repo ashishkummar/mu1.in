@@ -383,6 +383,16 @@ body {
     }
 }
 
+
+.content-block a {
+    color: #9C27B0;
+    text-decoration: underline;
+}
+
+.content-block a:hover {
+    text-decoration: none;
+}
+
 /* Footer Styles */
 .footer {
     text-align: center;
