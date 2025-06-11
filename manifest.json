@@ -1,0 +1,15 @@
+{
+  "short_name": "MU1.in",
+  "name": "Motivational Umbrella",
+  "icons": [
+    {
+      "src": "https://scontent.fdel41-1.fna.fbcdn.net/v/t39.30808-1/436262132_937376365057071_7872012874805576734_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=109&ccb=1-7&_nc_sid=f907e8&_nc_ohc=otIA5qHjEqoQ7kNvwHw5hbt&_nc_oc=Adnirp5NHvFgE4xle4YTb5OedB0eUKqqwnXLRa7tbapLCY_Nc3VIZPwPmkDrmQ5E_CI&_nc_zt=24&_nc_ht=scontent.fdel41-1.fna&_nc_gid=XMZacfffhH5jNFvtGZvS0w&oh=00_AfNnGT0X9Q9XEdzHErUhnuA5Pn7CpWMYM-zBjOGhlbyPDw&oe=684E7004",
+      "type": "image/jpeg",
+      "sizes": "200x200"
+    }
+  ],
+  "start_url": "/index.html",
+  "display": "standalone",
+  "theme_color": "#9C27B0",
+  "background_color": "#ffffff"
+}
