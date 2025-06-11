@@ -382,3 +382,45 @@ body {
         max-width: 100%;
     }
 }
+
+/* Footer Styles */
+.footer {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 8px;
+    color: #444;
+}
+
+.footer a {
+    color: #9C27B0;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Back Button Styles */
+.back-button {
+    background: rgba(108, 117, 125, 0.18);
+    color: #6c757d;
+    border: 1.5px solid #ced4da;
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 30px;
+}
+
+.back-button:hover {
+    background: rgba(108, 117, 125, 0.28);
+    color: #343a40;
+    border: 1.5px solid #6c757d;
+    transform: translateY(-2px);
+}
