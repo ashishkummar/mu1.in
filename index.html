@@ -404,6 +404,7 @@
             <li><a href="https://chatgpt.com/g/g-68418ba67ea88191a3739a4132512ad4-realgpt-in" target="_blank">Ask Me Anything</a></li>
             <li><a href="https://www.facebook.com/MU1.in/" target="_blank">MU1 Facebook</a></li>
             <li><a href="https://whatsapp.com/channel/0029VbAy0TJIN9iryiXipt2E" target="_blank">WhatsApp Channel</a></li>
+            <li><a href="#" id="shareBtn">🌐 Share</a></li>
         </ul>
     </nav>
 
@@ -441,7 +442,7 @@
         </section>
 
         <section class="content-block survey-block">
-            <h2>Share Your Feedback</h2>
+            <h2> Share Your Feedback</h2>
             <p style="text-align: center; margin-bottom: 20px; font-size: 0.9rem;">Help us make this website perfect for you! Your suggestions are valuable.</p>
             <div class="google-form-container">
                 <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdqvfrP7F3S6FDRN9IFJ3ybOJ53o5By7DwoL3X-zsTo1Ob9sw/viewform?embedded=true" width="100%" style="max-width: 640px;" height="982" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe> 
@@ -514,6 +515,45 @@
             sheetModal.addEventListener('click', (event) => {
                 if (event.target === sheetModal) {
                     sheetModal.classList.remove('open');
+                }
+            });
+        }
+
+        // Share button functionality
+        const shareBtn = document.getElementById('shareBtn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', async (event) => {
+                event.preventDefault(); // Prevent default anchor behavior
+
+                const shareData = {
+                    title: 'Motivational Umbrella',
+                    text: 'Check out this amazing website!',
+                    url: window.location.href
+                };
+
+                // Close the menu first for a smoother experience
+                if (navOverlay.classList.contains('open')) {
+                    burgerMenu.classList.remove('open');
+                    navOverlay.classList.remove('open');
+                }
+
+                try {
+                    if (navigator.share) {
+                        // Use a short delay to allow the menu to close before the share sheet opens
+                        setTimeout(async () => {
+                            await navigator.share(shareData);
+                            console.log('Content shared successfully');
+                        }, 150); // 150ms for animation
+                    } else {
+                        // Fallback for desktop or unsupported browsers
+                        alert('Web Share not supported. You can manually copy the link: ' + window.location.href);
+                    }
+                } catch (err) {
+                    console.error('Error sharing content:', err);
+                    // Don't show an alert for user cancellations (e.g., AbortError)
+                    if (err.name !== 'AbortError') {
+                        alert('An error occurred while trying to share.');
+                    }
                 }
             });
         }
